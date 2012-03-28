@@ -105,7 +105,7 @@ define([
 	}
 
 	return declare("dojox.mvc._atBindingMixin", null, {
-		"data-dojo-bind": null,
+		"data-dojo-bind": "",
 
 		_dbpostscript: function(/*Object?*/ params, /*DomNode|String*/ srcNodeRef){
 			// summary:
@@ -192,8 +192,9 @@ define([
 			// summary:
 			//		Sets data binding described in data-dojo-bind.
 
-			for(var prop in value){
-				var a = value[prop];
+			var list = eval("({" + value + "})");
+			for(var prop in list){
+				var a = list[prop];
 				if(a){
 					this._setAtWatchHandle(prop, lang.mixin({
 						atsignature: "dojox.mvc.at",

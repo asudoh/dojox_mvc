@@ -42,7 +42,7 @@
 		require([
 			"dojox",
 			"dojo/Stateful",
-			"dojox/mobile/parser",
+			"dojo/parser",
 			"dojox/mvc/_atBindingExtension",
 			"dojox/mvc/ParserExtension",
 			"dojo/domReady!"
@@ -59,12 +59,12 @@
 	<div>
 		<div>
 			Text:
-			<span data-dojo-bind="{'class': [boldTextModel, 'checked', {direction: dojox.mvc.from, converter: {format: function(value){ return value ? 'boldText' : ''; }}}],
-			                      value: [titleModel, 'value']}"></span>
+			<span data-dojo-bind="'class': [boldTextModel, 'checked', {direction: dojox.mvc.from, converter: {format: function(value){ return value ? 'boldText' : ''; }}}],
+			                      value: [titleModel, 'value']"></span>
 		</div>
 		<div>
 			Choose text from:
-			<select type="combo" data-dojo-bind="{value: [titleModel, 'value']}">
+			<select type="combo" data-dojo-bind="value: [titleModel, 'value']">
 				<option value="Foo">Foo</option>
 				<option value="Bar">Bar</option>
 			</select>
@@ -72,10 +72,10 @@
 	</div>
 
 	<div style="margin-top:8px;">
-		<div style="width:200px;height:200px;" data-dojo-bind="{'class': [colorModel, 'value']}"></div>
+		<div style="width:200px;height:200px;" data-dojo-bind="'class': [colorModel, 'value']"></div>
 		<div>
 			Choose color from:
-			<select type="combo" data-dojo-bind="{value: [colorModel, 'value']}">
+			<select type="combo" data-dojo-bind="value: [colorModel, 'value']">
 				<option value="bgRed">Red</option>
 				<option value="bgGreen">Green</option>
 				<option value="bgBlue">Blue</option>
@@ -85,7 +85,7 @@
 
 	<div style="margin-top:8px;">
 		The text should be bold:
-		<input type="checkbox" data-dojo-bind="{checked: [boldTextModel, 'checked']}">
+		<input type="checkbox" data-dojo-bind="checked: [boldTextModel, 'checked']">
 	</div>
   </body>
 </html>
