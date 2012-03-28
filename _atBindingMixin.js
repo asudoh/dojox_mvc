@@ -105,12 +105,14 @@ define([
 	}
 
 	return declare("dojox.mvc._atBindingMixin", null, {
+		"data-dojo-bind": null,
+
 		_dbpostscript: function(/*Object?*/ params, /*DomNode|String*/ srcNodeRef){
 			// summary:
 			//		See if any parameters for this widget are dojox.mvc.at handles.
 			//		If so, move them under this._refs to prevent widget implementations from referring them.
 
-			var refs = this._refs = params.refs || {};
+			var refs = this._refs = (params || {}).refs || {};
 			for(var prop in params){
 				if((params[prop] || {}).atsignature == "dojox.mvc.at"){
 					var h = params[prop];
@@ -183,6 +185,23 @@ define([
 			}else{
 				// Otherwise, queue it up to this._refs so that _dbstartup() can pick it up.
 				this._refs[name] = value;
+			}
+		},
+
+		_setBind: function(/*Object*/ value){
+			// summary:
+			//		Sets data binding described in data-dojo-bind.
+
+			for(var prop in value){
+				var a = value[prop];
+				if(a){
+					this._setAtWatchHandle(prop, lang.mixin({
+						atsignature: "dojox.mvc.at",
+						target: a[0],
+						targetProp: a[1],
+						direction: sync.both
+					}, a[2]));
+				}
 			}
 		},
 

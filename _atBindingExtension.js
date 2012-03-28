@@ -34,6 +34,9 @@ define([
 		if((value || {}).atsignature == "dojox.mvc.at"){
 			return this._setAtWatchHandle(name, value);
 		}
+		if(name == "data-dojo-bind"){
+			return this._setBind(value);
+		}
 		return oldWidgetBaseSet.apply(this, lang._toArray(arguments));
 	};
 });

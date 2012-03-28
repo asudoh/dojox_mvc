@@ -31,10 +31,7 @@
 	<script type="text/javascript">
 		require = {
 			isDebug: 1,
-			async: 1,
-			has: {
-				"dojox-mvc-binding-in-props-only": 0
-			}
+			async: 1
 		};
 	</script>
 
@@ -45,9 +42,10 @@
 		require([
 			"dojox",
 			"dojo/Stateful",
-			"dojo/parser",
-			"dojox/mvc/at",
-			"dojox/mvc/ParserExtension"
+			"dojox/mobile/parser",
+			"dojox/mvc/_atBindingExtension",
+			"dojox/mvc/ParserExtension",
+			"dojo/domReady!"
 		], function(dojox, Stateful, parser){
 			titleModel = new Stateful({value: "Foo"});
 			colorModel = new Stateful({value: "bgRed"});
@@ -61,12 +59,12 @@
 	<div>
 		<div>
 			Text:
-			<span data-dojo-bind="class: dojox.mvc.at(boldTextModel, 'checked').direct(dojox.mvc.from).attach({format: function(value){ return value ? 'boldText' : ''; }}),
-			                      value: dojox.mvc.at(titleModel, 'value')"></span>
+			<span data-dojo-bind="{'class': [boldTextModel, 'checked', {direction: dojox.mvc.from, converter: {format: function(value){ return value ? 'boldText' : ''; }}}],
+			                      value: [titleModel, 'value']}"></span>
 		</div>
 		<div>
 			Choose text from:
-			<select type="combo" data-dojo-bind="value: dojox.mvc.at(titleModel, 'value')">
+			<select type="combo" data-dojo-bind="{value: [titleModel, 'value']}">
 				<option value="Foo">Foo</option>
 				<option value="Bar">Bar</option>
 			</select>
@@ -74,10 +72,10 @@
 	</div>
 
 	<div style="margin-top:8px;">
-		<div style="width:200px;height:200px;" data-dojo-bind="class: dojox.mvc.at(colorModel, 'value')"></div>
+		<div style="width:200px;height:200px;" data-dojo-bind="{'class': [colorModel, 'value']}"></div>
 		<div>
 			Choose color from:
-			<select type="combo" data-dojo-bind="value: dojox.mvc.at(colorModel, 'value')">
+			<select type="combo" data-dojo-bind="{value: [colorModel, 'value']}">
 				<option value="bgRed">Red</option>
 				<option value="bgGreen">Green</option>
 				<option value="bgBlue">Blue</option>
@@ -87,7 +85,7 @@
 
 	<div style="margin-top:8px;">
 		The text should be bold:
-		<input type="checkbox" data-dojo-bind="checked: dojox.mvc.at(boldTextModel, 'checked')">
+		<input type="checkbox" data-dojo-bind="{checked: [boldTextModel, 'checked']}">
 	</div>
   </body>
 </html>
