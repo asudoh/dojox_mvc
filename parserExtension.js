@@ -16,8 +16,12 @@ define([
 	//		A extension of Dojo parser that allows data binding without specifying data-dojo-type.
 
 	has.add("dom-qsa", !!document.createElement("div").querySelectorAll);
-	try{ has.add("dojo-parser", !!require("dojo/parser"));  }catch(e){}
-	try{ has.add("dojo-mobile-parser", !!require("dojox/mobile/parser")); }catch(e){}
+
+	var hasParser, hasMobileParser;
+	try{ hasParser = !!require("dojo/parser"); }catch(e){}
+	try{ hasMobileParser = !!require("dojox/mobile/parser"); }catch(e){}
+	has.add("dojo-parser", hasParser);
+	has.add("dojo-mobile-parser", hasParser && !hasMobileParser);
 
 	if(has("dojo-parser")){
 		var oldScan = parser.scan;

@@ -3,15 +3,25 @@ define([
 	"dojo/_base/array",
 	"dojo/_base/lang",
 	"dojo/_base/declare",
+	"dojo/dom-construct",
+	"dojo/has",
+	"dojo/has!dojo-mobile-parser?:dojo/parser",
 	"dijit/_Container",
 	"dijit/_WidgetBase",
+	"dojo/has!dojo-parser?:dojox/mobile/parser",
 	"./Templated"
-], function(require, array, lang, declare, _Container, _WidgetBase, Templated){
+], function(require, array, lang, declare, domConstruct, has, parser, _Container, _WidgetBase, mobileParser, Templated){
 	var childTypeAttr = "data-mvc-child-type",
 	 childMixinsAttr = "data-mvc-child-mixins",
 	 childParamsAttr = "data-mvc-child-props",
 	 childBindingsAttr = "data-mvc-child-bindings",
 	 undef;
+
+	var hasParser, hasMobileParser;
+	try{ hasParser = !!require("dojo/parser"); }catch(e){}
+	try{ hasMobileParser = !!require("dojox/mobile/parser"); }catch(e){}
+	has.add("dojo-parser", hasParser);
+	has.add("dojo-mobile-parser", hasParser && !hasMobileParser);
 
 	function evalParams(params){
 		return eval("({" + params + "})");
@@ -250,7 +260,21 @@ define([
 
 						var childParams = this.childParams || this[childParamsAttr] && evalParams.call(params, this[childParamsAttr]),
 						 childBindings = this.childBindings || this[childBindingsAttr] && evalParams.call(params, this[childBindingsAttr]);
-						if(this.templateString && !params.templateString && !childClz.prototype.templateString){ params.templateString = this.templateString; }
+						if(this.templateString && !params.templateString && !childClz.prototype.templateString){
+							var node = domConstruct.toDom(Templated.prototype._stringRepl.call(lang.delegate(params, {declaredClass: childClz.prototype.declaredClass}), this.templateString), this.ownerDocument);
+							if(node.nodeType == 1){
+								var types = (parser.getTypesList([node])[0] || {}).types || [];
+								if(types.length > 0){
+									childClz = declare((node.childNodes[0] ? childClz : []).concat(array.map(types, function(type){ return lang.getObject(type) || require(type); })), {});
+								}
+								var props = parser.getParams(childClz, node, undef, {propsThis: props}).params;
+								for(var s in props){
+									childParams = lang.mixin(props, childParams);
+									break;
+								}
+							}
+							if(node.nodeType != 1 || node.childNodes[0]){ params.templateString = this.templateString; }
+						}
 						if(childBindings && !params.bindings && !childClz.prototype.bindings){ params.bindings = childBindings; }
 						return new childClz(lang.delegate(lang.isFunction(childParams) ? childParams.call(params, this) : childParams, params));
 					}, this), function(child, idx){
